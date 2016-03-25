@@ -3,7 +3,7 @@ module Formbuilder
 
     mount_uploader :upload, Formbuilder::EntryAttachmentUploader
 
-    validates :upload, presence: true
+    # validates :upload, presence: true
 
   end
 end

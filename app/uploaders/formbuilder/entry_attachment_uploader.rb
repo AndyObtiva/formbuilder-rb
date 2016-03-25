@@ -9,12 +9,12 @@ module Formbuilder
     storage_mechanism = Rails.env.test? ? :file : :fog
     storage storage_mechanism
 
-    process :set_content_type
-    process :save_content_type_and_size_in_model
+    # process :set_content_type
+    # process :save_content_type_and_size_in_model
 
-    version :thumb, :if => :image? do
-      process resize_to_limit: [250, 250]
-    end
+    # version :thumb, :if => :image? do
+      # process resize_to_limit: [250, 250]
+    # end
 
     # Set to nil if no file path required
     #

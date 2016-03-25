@@ -38,6 +38,10 @@ module Formbuilder
             str << """
               <img src='#{attachment.upload.thumb.url}' /><br />
             """
+          else
+            str << """
+              <img src='#{attachment.upload.url}' /><br />
+            """
           end
 
           str << """
@@ -85,7 +89,11 @@ module Formbuilder
         remove_entry_attachments(entry.responses_column_was.try(:[], self.id.to_s)) # remove old attachments
 
         raw_value.map do |file|
-          EntryAttachment.create(upload: file).id
+          if file.start_with?('http')
+            EntryAttachment.create(remote_upload_url: file).id
+          else
+            EntryAttachment.create(upload: file).id
+          end
         end.join(',')
       end
     end
