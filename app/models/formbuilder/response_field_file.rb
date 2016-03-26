@@ -31,21 +31,15 @@ module Formbuilder
       return_str << get_attachments(value).map do |attachment|
         String.new.tap do |str|
           str << """
-            <a href='#{attachment.upload.url}' target='_blank'>
+            <a href='#{attachment.remote_upload_url}' target='_blank'>
           """
 
-          if attachment.upload.send(:active_versions).include?(:thumb)
-            str << """
-              <img src='#{attachment.upload.thumb.url}' /><br />
-            """
-          else
-            str << """
-              <img src='#{attachment.upload.url}' /><br />
-            """
-          end
+          str << """
+            <img src='#{attachment.remote_upload_url}' style='width: 250px;' /><br />
+          """
 
           str << """
-              #{attachment.upload.try(:raw_filename)}
+              #{attachment.upload}
             </a>
           """
         end
@@ -56,7 +50,7 @@ module Formbuilder
 
     def render_entry_text(value, opts = {})
       get_attachments(value).map { |attachment|
-        attachment.upload.url
+        attachment.remote_upload_url
       }.join(', ')
     end
 

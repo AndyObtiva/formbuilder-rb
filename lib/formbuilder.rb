@@ -1,6 +1,4 @@
 # Require dependencies explicitly
-require 'carrierwave'
-require 'fog/aws'
 require 'erector'
 require 'geocoder'
 
