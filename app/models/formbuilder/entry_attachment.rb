@@ -1,11 +1,17 @@
 module Formbuilder
   class EntryAttachment < ActiveRecord::Base
-    def remote_upload_url
-      AWS_BUCKET.object(File.join(raw_store_dir, upload)).presigned_url(:get)
-    end
-
-    def remote_upload_thumb_url
-      AWS_BUCKET.object(File.join(raw_store_dir.sub('originals', 'thumbs'), upload)).presigned_url(:get)
+    # Returns remote upload url with carrierwave backwards compatibility
+    # Takes version as argument (default is 'original') like 'thumb'.
+    def remote_upload_url(version='original')
+      directory = raw_store_dir
+      file = upload
+      if stored_via_carrier_wave?
+        prefix = (version == 'original') ? '' : "#{version}_"
+        file = "#{prefix}#{file}"
+      else
+        directory = directory.sub('originals', version.pluralize)
+      end
+      AWS_BUCKET.object(File.join(directory, file)).presigned_url(:get)
     end
 
     # Comes from the outside since it gets created in JS S3 Post
@@ -24,6 +30,10 @@ module Formbuilder
 
     def raw_store_dir
       store_dir.sub(/^\//, '').sub(/\/$/, '')
+    end
+
+    def stored_via_carrier_wave?
+      attributes['store_dir'].blank?
     end
 
     # Used for backward compatibility with older records not having store_dir
