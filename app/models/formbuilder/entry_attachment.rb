@@ -4,6 +4,10 @@ module Formbuilder
       AWS_BUCKET.object(File.join(raw_store_dir, upload)).presigned_url(:get)
     end
 
+    def remote_upload_thumb_url
+      AWS_BUCKET.object(File.join(raw_store_dir.sub('originals', 'thumbs'), upload)).presigned_url(:get)
+    end
+
     # Comes from the outside since it gets created in JS S3 Post
     def remote_upload_url=(remote_upload_url)
       if remote_upload_url.present?

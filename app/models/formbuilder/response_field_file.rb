@@ -35,7 +35,7 @@ module Formbuilder
           """
 
           str << """
-            <img src='#{attachment.remote_upload_url}' style='width: 250px;' /><br />
+            <img src='#{attachment.remote_upload_thumb_url}' /><br />
           """
 
           str << """
