@@ -31,17 +31,15 @@ module Formbuilder
       return_str << get_attachments(value).map do |attachment|
         String.new.tap do |str|
           str << """
-            <a href='#{attachment.upload.url}' target='_blank'>
+            <a href='#{attachment.remote_upload_url}' target='_blank'>
           """
 
-          if attachment.upload.send(:active_versions).include?(:thumb)
-            str << """
-              <img src='#{attachment.upload.thumb.url}' /><br />
-            """
-          end
+          str << """
+            <img src='#{attachment.remote_upload_url('thumb')}' /><br />
+          """
 
           str << """
-              #{attachment.upload.try(:raw_filename)}
+              #{attachment.upload}
             </a>
           """
         end
@@ -52,7 +50,7 @@ module Formbuilder
 
     def render_entry_text(value, opts = {})
       get_attachments(value).map { |attachment|
-        attachment.upload.url
+        attachment.remote_upload_url
       }.join(', ')
     end
 
@@ -85,7 +83,11 @@ module Formbuilder
         remove_entry_attachments(entry.responses_column_was.try(:[], self.id.to_s)) # remove old attachments
 
         raw_value.map do |file|
-          EntryAttachment.create(upload: file).id
+          if file.start_with?('http')
+            EntryAttachment.create(remote_upload_url: file).id
+          else
+            EntryAttachment.create(upload: file).id
+          end
         end.join(',')
       end
     end
