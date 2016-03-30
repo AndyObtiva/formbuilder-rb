@@ -12,19 +12,29 @@ module Formbuilder
 
       str = """
         <div id='signature-pad-#{self.id}' class='m-signature-pad'>
-          <div class='m-signature-pad--body'>
-            <canvas data-id='#{self.id}'></canvas>
-          </div>
-          <div class='m-signature-pad--footer'>
-            <div class='description'>#{self[:field_options][:description]}</div>
-            <button type='button' class='button clear' data-clear-id='#{self.id}' data-action='clear'>Clear</button>
-            <button type='button' class='button save' data-save-id='#{self.id}' data-action='save'>Save</button>
-          </div>
+      """
+      if value.present?
+        str += """
+        <img src='#{value}'>
+        """
+      else
+        str += """
+        <div class='m-signature-pad--body'>
+          <canvas data-id='#{self.id}'></canvas>
+        </div>
+        <div class='m-signature-pad--footer'>
+          <div class='description'>#{self[:field_options][:description]}</div>
+          <button type='button' class='button clear' data-clear-id='#{self.id}' data-action='clear'>Clear</button>
+          <button type='button' class='button save' data-save-id='#{self.id}' data-action='save'>Save</button>
+        </div>
+        """
+      end
+      str += """
         </div>
       """
 
       str += """
-        <input name='response_fields[#{self.id}]' type='hidden' value='' />
+        <input name='response_fields[#{self.id}]' type='hidden' value='#{value}' />
       """
 
       str
