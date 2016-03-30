@@ -19,9 +19,13 @@ module Formbuilder
     end
 
     def render_input(value, opts = {})
+      entry_attachment = Formbuilder::EntryAttachment.find_by_id(value)
+      upload = entry_attachment.try(:upload)
+      remote_upload_url = entry_attachment.try(:remote_upload_url)
       """
         <span class='existing-filename'>#{get_attachments(value).first.try(:upload).try(:raw_filename)}</span>
-        <input type='file' name='response_fields[#{self[:id]}][]' id='response_fields_#{self[:id]}' />
+        <input type='file' name='response_fields[#{self[:id]}][]' id='response_fields_#{self[:id]}' value='#{upload}' />
+        <input type='hidden' name='response_fields[#{self[:id]}][]' id='response_fields_#{self[:id]}_buffer' class='file-buffer' value='#{remote_upload_url}' />
       """
     end
 
