@@ -87,7 +87,7 @@ module Formbuilder
         remove_entry_attachments(entry.responses_column_was.try(:[], self.id.to_s)) # remove old attachments
 
         raw_value.map do |file|
-          if file.start_with?('http')
+          if file.to_s.start_with?('http')
             EntryAttachment.create(remote_upload_url: file).id
           else
             EntryAttachment.create(upload: file).id
