@@ -11,13 +11,14 @@ module Formbuilder
       else
         directory = directory.sub('originals', version.pluralize)
       end
-      AWS_BUCKET.object(File.join(directory, file)).presigned_url(:get)
+      object_key = URI.decode(File.join(directory, file))
+      AWS_BUCKET.object(object_key).presigned_url(:get)
     end
 
     # Comes from the outside since it gets created in JS S3 Post
     def remote_upload_url=(remote_upload_url)
       if remote_upload_url.present?
-        remote_upload_path = URI(URI.escape(remote_upload_url)).path
+        remote_upload_path = URI(URI.encode(remote_upload_url)).path
         path_file_match = remote_upload_path.match(/^(\/([^\/]+\/)+)([^\/]+)$/)
         self.store_dir = path_file_match[1]
         self.upload = path_file_match[3]
