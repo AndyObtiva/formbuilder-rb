@@ -14,6 +14,20 @@ module Formbuilder
       AWS_BUCKET.object(File.join(directory, file)).presigned_url(:get)
     end
 
+    def remote_upload_image(version='original')
+      try_count = 3
+      try_count.times do |i|
+        try_number = i+1
+        begin
+          return Base64.encode64(RestClient.get(remote_upload_url(version)))
+        rescue => e
+          tries_left = 3 - try_number
+          Rails.logger.error("Failed #{try_number}#{try_number.ordinal} try to download #{upload} (#{tries_left} #{'try'.pluralize(tries_left)} left)")
+          Rails.logger.error(e)
+        end
+      end
+    end
+
     # Comes from the outside since it gets created in JS S3 Post
     def remote_upload_url=(remote_upload_url)
       if remote_upload_url.present?
@@ -30,6 +44,10 @@ module Formbuilder
 
     def raw_store_dir
       store_dir.sub(/^\//, '').sub(/\/$/, '')
+    end
+
+    def extension
+      upload.match(/\.([^.]+)$/)[1]
     end
 
     def stored_via_carrier_wave?

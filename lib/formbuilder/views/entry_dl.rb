@@ -2,10 +2,13 @@ module Formbuilder
   module Views
     class EntryDl < Erector::Widget
 
+      self.ignore_extra_assigns = true
+
       needs :entry,
             :form,
             show_blind: false,
             show_admin_only: false
+
 
       def content
         dl(class: 'entry-dl') {
@@ -19,7 +22,7 @@ module Formbuilder
             }
 
             dd {
-              if (x = rf.render_entry(value, entry: @entry))
+              if (x = rf.render_entry(value, entry: @entry, format: @format))
                 rawtext x
               else
                 no_response

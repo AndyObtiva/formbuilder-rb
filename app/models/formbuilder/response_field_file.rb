@@ -39,7 +39,7 @@ module Formbuilder
           """
 
           str << """
-            <img src='#{attachment.remote_upload_url('thumb')}' /><br />
+          <img src='#{thumb_url(attachment, opts[:format])}' /><br />
           """
 
           str << """
@@ -56,6 +56,15 @@ module Formbuilder
       get_attachments(value).map { |attachment|
         attachment.remote_upload_url
       }.join(', ')
+    end
+
+    def thumb_url(attachment, format)
+      if format.to_s == 'pdf'
+        thumb = attachment.remote_upload_image('thumb')
+        thumb_url = "data:image/#{attachment.extension};base64,#{thumb}"
+      else
+        thumb_url = attachment.remote_upload_url('thumb')
+      end
     end
 
     def audit_response(value, all_responses)
