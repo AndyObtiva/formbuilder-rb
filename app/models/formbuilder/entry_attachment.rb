@@ -11,7 +11,7 @@ module Formbuilder
       else
         directory = directory.sub('originals', version.pluralize)
       end
-      AWS_BUCKET.object(File.join(directory, file)).presigned_url(:get)
+      AWS_BUCKET.object(File.join(directory, URI.decode(file))).presigned_url(:get)
     end
 
     def remote_upload_image(version='original')
